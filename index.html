@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今日何をした？</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 設定画面 -->
+<div id="settings-screen" class="screen">
+    <div class="card">
+        <h2>設定・ログイン</h2>
+        <form class="settings-form" onsubmit="return false;">
+            <div class="form-group">
+                <label for="apiKey">API Key</label>
+                <input type="text" id="apiKey" placeholder="Firebase API Key">
+            </div>
+            <div class="form-group">
+                <label for="authDomain">Auth Domain</label>
+                <input type="text" id="authDomain" placeholder="project-id.firebaseapp.com">
+            </div>
+            <div class="form-group">
+                <label for="projectId">Project ID</label>
+                <input type="text" id="projectId" placeholder="project-id">
+            </div>
+            <div class="form-group">
+                <label for="storageBucket">Storage Bucket</label>
+                <input type="text" id="storageBucket" placeholder="project-id.appspot.com">
+            </div>
+            <div class="form-group">
+                <label for="messagingSenderId">Messaging Sender ID</label>
+                <input type="text" id="messagingSenderId" placeholder="123456789012">
+            </div>
+            <div class="form-group">
+                <label for="appId">App ID</label>
+                <input type="text" id="appId" placeholder="1:123456789012:web:abcdef123456">
+            </div>
+            <div class="form-group">
+                <label for="email">メールアドレス</label>
+                <input type="email" id="email" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label for="password">パスワード</label>
+                <input type="password" id="password" placeholder="パスワード">
+            </div>
+            <button type="button" id="save-config-btn" class="ok-btn">保存してログイン</button>
+        </form>
+    </div>
+</div>
+
+<!-- カレンダー画面 -->
+<div id="calendar-screen" class="screen">
+    <div class="card">
+        <div class="header-row">
+            <button id="menu-btn" class="menu-btn">
+                <svg viewBox="0 0 24 24">
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+            </button>
+            <h2 id="calendar-title">2025年12月</h2>
+        </div>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button id="prev-month" class="calendar-nav-btn">← 前月</button>
+                <button id="today-btn" class="calendar-nav-btn">今月</button>
+                <button id="next-month" class="calendar-nav-btn">次月 →</button>
+            </div>
+            
+            <div id="calendar-grid" class="calendar-grid">
+                <!-- カレンダーはJavaScriptで動的に生成 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 入力/編集画面 -->
+<div id="editor-screen" class="screen">
+    <div class="card">
+        <!-- ヘッダー部分 -->
+        <div class="header-row">
+            <button id="menu-btn-editor" class="menu-btn">
+                <svg viewBox="0 0 24 24">
+                    <line x1="4" y1="6" x2="20" y2="6" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
+            </button>
+            <h2 id="current-date">2025/12/12</h2>
+        </div>
+        
+        <textarea id="entry-text" class="text-area" placeholder="今日何をしましたか？"></textarea>
+        
+        <!-- カメラエリア -->
+        <div class="camera-wrapper">
+            <div class="camera-btn">
+                <svg viewBox="0 0 24 24" class="camera-svg" style="fill: #FFB085; stroke: none;">
+                    <path d="M4 8 h4 l2 -3 h4 l2 3 h4 a2 2 0 0 1 2 2 v9 a2 2 0 0 1 -2 2 H4 a2 2 0 0 1 -2 -2 V10 a2 2 0 0 1 2 -2 z" />
+                    <circle cx="12" cy="14" r="3" fill="none" stroke="#fff" stroke-width="2" />
+                </svg>
+                <div style="position:absolute; bottom:15px; right:15px; width:24px; height:24px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24" style="width:20px; height:20px; fill:#FFB085;">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 顔アイコンエリア -->
+        <div class="selector-row">
+            <button class="mood-btn">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9 9h.01 M15 9h.01" stroke-width="3"/>
+                    <path d="M9 17c0-2 2-3 3-3s3 1 3 3" />
+                </svg>
+            </button>
+            <button class="mood-btn">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9 9h.01 M15 9h.01" stroke-width="3"/>
+                    <path d="M9 16c1.5-1 4.5-1 6 0" />
+                </svg>
+            </button>
+            <button class="mood-btn">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9 9h.01 M15 9h.01" stroke-width="3"/>
+                    <line x1="9" y1="15" x2="15" y2="15" />
+                </svg>
+            </button>
+            <button class="mood-btn">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9 9h.01 M15 9h.01" stroke-width="3"/>
+                    <path d="M9 14c0 2 1.5 3 3 3s3-1 3-3" />
+                </svg>
+            </button>
+            <button class="mood-btn">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M8 9.5c0-1 1-1.5 1.5-1.5S11 8.5 11 9.5 M13 9.5c0-1 1-1.5 1.5-1.5s1.5.5 1.5 1.5" stroke-width="2"/>
+                    <path d="M8 14c1.5 2 4.5 2 6 0" stroke-width="2"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- 色選択ボタンエリア -->
+        <div class="selector-row">
+            <button class="color-btn bg-red"></button>
+            <button class="color-btn bg-purple"></button>
+            <button class="color-btn bg-blue"></button>
+            <button class="color-btn bg-green"></button>
+            <button class="color-btn bg-yellow"></button>
+        </div>
+
+        <button id="ok-btn" class="ok-btn">OK</button>
+    </div>
+</div>
+
+<!-- メニューオーバーレイ -->
+<div id="menu-overlay" class="menu-overlay">
+    <div class="menu-panel">
+        <button id="menu-today" class="menu-item">📝 今日</button>
+        <button id="menu-calendar" class="menu-item">📅 今まで（カレンダー）</button>
+    </div>
+</div>
+
+<!-- Firebase SDK (v9 modular) -->
+<script type="module">
+    // Firebase SDKをインポート
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
+    import { getAuth, signInWithEmailAndPassword, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    // グローバルに公開
+    window.firebaseApp = { initializeApp };
+    window.firebaseFirestore = { getFirestore, doc, setDoc, getDoc, deleteDoc, collection, query, where, getDocs };
+    window.firebaseStorage = { getStorage, ref, uploadBytes, getDownloadURL, deleteObject };
+    window.firebaseAuth = { getAuth, signInWithEmailAndPassword, signOut };
+</script>
+
+<!-- アプリケーションスクリプト -->
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/firebase.js"></script>
+<script src="js/main.js"></script>
+
+<script>
+    // エディター画面のメニューボタンも同じ機能に接続
+    document.addEventListener('DOMContentLoaded', () => {
+        const menuBtnEditor = document.getElementById('menu-btn-editor');
+        if (menuBtnEditor) {
+            menuBtnEditor.addEventListener('click', () => {
+                View.openMenu();
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

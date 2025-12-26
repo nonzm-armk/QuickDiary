@@ -377,5 +377,54 @@ const View = {
     getColorClass(colorIndex) {
         const colors = ['bg-red', 'bg-purple', 'bg-blue', 'bg-green', 'bg-yellow'];
         return colors[colorIndex] || 'bg-red';
+    },
+
+    /**
+     * ローディング表示
+     * @param {string} message - 表示するメッセージ
+     */
+    showLoading(message = '読み込み中...') {
+        let loadingOverlay = document.getElementById('loading-overlay');
+        
+        // ローディングオーバーレイがなければ作成
+        if (!loadingOverlay) {
+            loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loading-overlay';
+            loadingOverlay.className = 'loading-overlay';
+            
+            const loadingContent = document.createElement('div');
+            loadingContent.className = 'loading-content';
+            
+            const spinner = document.createElement('div');
+            spinner.className = 'loading-spinner';
+            
+            const loadingText = document.createElement('div');
+            loadingText.className = 'loading-text';
+            loadingText.id = 'loading-text';
+            
+            loadingContent.appendChild(spinner);
+            loadingContent.appendChild(loadingText);
+            loadingOverlay.appendChild(loadingContent);
+            document.body.appendChild(loadingOverlay);
+        }
+        
+        // メッセージを更新
+        const loadingText = document.getElementById('loading-text');
+        if (loadingText) {
+            loadingText.textContent = message;
+        }
+        
+        // 表示
+        loadingOverlay.style.display = 'flex';
+    },
+
+    /**
+     * ローディング非表示
+     */
+    hideLoading() {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'none';
+        }
     }
 };

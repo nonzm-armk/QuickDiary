@@ -315,6 +315,15 @@ const App = {
         const dateString = this.formatDate(this.state.currentDate);
         const data = View.getEditorData();
 
+        // バリデーション: 入力内容のチェック
+        if (!data.text && this.state.selectedImages.length === 0 && this.state.currentImageUrls.length === 0 && data.mood === null) {
+            alert('テキスト、画像、または気分のいずれかを入力してください。');
+            return;
+        }
+
+        // ローディング表示
+        View.showLoading('保存中...');
+
         try {
             // 画像の処理
             const imageUrls = [];
@@ -329,18 +338,25 @@ const App = {
                 for (let i = 0; i < this.state.selectedImages.length; i++) {
                     const file = this.state.selectedImages[i];
                     
-                    // 画像をリサイズ
-                    const resizedBlob = await Utils.resizeImage(file, 1024);
-                    
-                    // Storageにアップロード
-                    const imagePath = Utils.generateImagePath(
-                        loginInfo.uid,
-                        dateString,
-                        imageUrls.length + i
-                    );
-                    
-                    const url = await Store.uploadImage(resizedBlob, imagePath);
-                    imageUrls.push(url);
+                    try {
+                        // 画像をリサイズ
+                        const resizedBlob = await Utils.resizeImage(file, 1024);
+                        
+                        // Storageにアップロード
+                        const imagePath = Utils.generateImagePath(
+                            loginInfo.uid,
+                            dateString,
+                            this.state.currentImageUrls.length + i
+                        );
+                        
+                        const url = await Store.uploadImage(resizedBlob, imagePath);
+                        imageUrls.push(url);
+                    } catch (imageError) {
+                        console.error('画像アップロードエラー:', imageError);
+                        View.hideLoading();
+                        alert(`画像のアップロードに失敗しました（${i + 1}枚目）\n${imageError.message}`);
+                        return;
+                    }
                 }
             }
             
@@ -351,6 +367,8 @@ const App = {
             data.images = allImageUrls;
             
             await Store.saveEntry(dateString, data);
+            
+            View.hideLoading();
             alert('保存しました！');
             
             // 状態をリセット
@@ -360,8 +378,20 @@ const App = {
             // カレンダー画面へ戻る
             await this.showCalendar();
         } catch (error) {
+            View.hideLoading();
             console.error('保存エラー:', error);
-            alert('保存に失敗しました: ' + error.message);
+            
+            // エラーメッセージを分かりやすく
+            let errorMessage = '保存に失敗しました。';
+            if (error.code === 'permission-denied') {
+                errorMessage = '保存の権限がありません。ログイン状態を確認してください。';
+            } else if (error.code === 'unavailable') {
+                errorMessage = 'ネットワークエラーが発生しました。接続を確認してください。';
+            } else if (error.message) {
+                errorMessage = `保存に失敗しました: ${error.message}`;
+            }
+            
+            alert(errorMessage);
         }
     },
 
@@ -517,6 +547,9 @@ const App = {
 
         const dateString = this.formatDate(this.state.currentDate);
 
+        // ローディング表示
+        View.showLoading('削除中...');
+
         try {
             // 画像の削除
             if (this.state.currentImageUrls && this.state.currentImageUrls.length > 0) {
@@ -539,6 +572,7 @@ const App = {
             // Firestoreから記事を削除
             await Store.deleteEntry(dateString);
             
+            View.hideLoading();
             alert('削除しました！');
             
             // 状態をリセット
@@ -548,8 +582,20 @@ const App = {
             // カレンダー画面へ戻る
             await this.showCalendar();
         } catch (error) {
+            View.hideLoading();
             console.error('削除エラー:', error);
-            alert('削除に失敗しました: ' + error.message);
+            
+            // エラーメッセージを分かりやすく
+            let errorMessage = '削除に失敗しました。';
+            if (error.code === 'permission-denied') {
+                errorMessage = '削除の権限がありません。ログイン状態を確認してください。';
+            } else if (error.code === 'unavailable') {
+                errorMessage = 'ネットワークエラーが発生しました。接続を確認してください。';
+            } else if (error.message) {
+                errorMessage = `削除に失敗しました: ${error.message}`;
+            }
+            
+            alert(errorMessage);
         }
     },
 

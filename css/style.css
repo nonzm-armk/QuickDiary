@@ -481,3 +481,188 @@ h2 {
     font-size: 18px;
     font-weight: bold;
 }
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .card {
+        max-width: 100%;
+        padding: 15px 20px;
+        margin: 10px 0;
+    }
+
+    h2 {
+        font-size: 16px;
+    }
+
+    .text-area {
+        height: 80px;
+        font-size: 14px;
+    }
+
+    .camera-btn {
+        width: 80px;
+        height: 80px;
+    }
+
+    .camera-svg {
+        width: 50px;
+        height: 50px;
+    }
+
+    .ok-btn, .delete-btn {
+        font-size: 18px;
+        padding: 12px;
+    }
+
+    .calendar-nav-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    .calendar-day {
+        font-size: 12px;
+    }
+
+    .form-group input {
+        font-size: 14px;
+    }
+
+    .menu-panel {
+        width: 200px;
+    }
+
+    .menu-item {
+        font-size: 14px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 10px 15px;
+        gap: 15px;
+    }
+
+    .header-row {
+        gap: 10px;
+    }
+
+    .menu-btn {
+        width: 35px;
+        height: 35px;
+    }
+
+    .menu-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    h2 {
+        font-size: 14px;
+    }
+
+    .text-area {
+        height: 70px;
+        font-size: 13px;
+    }
+
+    .image-preview-container {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 8px;
+        max-height: 150px;
+    }
+
+    .camera-btn {
+        width: 70px;
+        height: 70px;
+    }
+
+    .mood-btn svg {
+        stroke-width: 2;
+    }
+
+    .ok-btn, .delete-btn {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .calendar-nav-btn {
+        padding: 5px 8px;
+        font-size: 11px;
+    }
+
+    .calendar-day {
+        font-size: 11px;
+    }
+
+    .calendar-day-header {
+        font-size: 10px;
+    }
+
+    .menu-panel {
+        width: 180px;
+        padding: 15px;
+    }
+}
+
+/* スムーズなアニメーション */
+.screen {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.screen.active {
+    opacity: 1;
+}
+
+/* ボタンのアクティブ状態 */
+.ok-btn:active, .delete-btn:active, .calendar-nav-btn:active {
+    transform: scale(0.98);
+}
+
+/* スクロールバーのスタイル（Webkit系ブラウザ） */
+.image-preview-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.image-preview-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.image-preview-container::-webkit-scrollbar-thumb {
+    background: var(--primary-orange);
+    border-radius: 10px;
+}
+
+.image-preview-container::-webkit-scrollbar-thumb:hover {
+    background: #ff8c50;
+}
+
+/* フォーカス時のアクセシビリティ */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--primary-orange);
+    outline-offset: 2px;
+}
+
+/* タッチデバイスでのホバー効果を無効化 */
+@media (hover: none) {
+    .mood-btn:hover,
+    .color-btn:hover,
+    .menu-btn:hover,
+    .ok-btn:hover,
+    .delete-btn:hover,
+    .calendar-nav-btn:hover,
+    .menu-item:hover {
+        background-color: inherit;
+        opacity: 1;
+        transform: none;
+    }
+}

@@ -166,11 +166,19 @@ const View = {
             const img = document.createElement('img');
             img.src = url;
             img.alt = `画像 ${index + 1}`;
+            img.style.cursor = 'pointer';
+            
+            // 画像クリックで拡大表示
+            img.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.openImageViewer(url);
+            });
             
             const removeBtn = document.createElement('button');
             removeBtn.className = 'image-remove-btn';
             removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-            removeBtn.onclick = () => {
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
                 if (window.App) {
                     window.App.removeImage(index);
                 }
@@ -212,11 +220,19 @@ const View = {
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.alt = `画像 ${index + 1}`;
+                img.style.cursor = 'pointer';
+                
+                // 画像クリックで拡大表示
+                img.addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    this.openImageViewer(e.target.result);
+                });
                 
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'image-remove-btn';
                 removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-                removeBtn.onclick = () => {
+                removeBtn.onclick = (ev) => {
+                    ev.stopPropagation();
                     if (window.App) {
                         window.App.removeImage(index);
                     }
@@ -425,6 +441,70 @@ const View = {
         const loadingOverlay = document.getElementById('loading-overlay');
         if (loadingOverlay) {
             loadingOverlay.style.display = 'none';
+        }
+    },
+
+    /**
+     * 画像ビューアーを開く
+     * @param {string} imageSrc - 表示する画像のURL
+     */
+    openImageViewer(imageSrc) {
+        const modal = document.getElementById('image-viewer-modal');
+        const viewerImage = document.getElementById('viewer-image');
+        
+        if (modal && viewerImage) {
+            viewerImage.src = imageSrc;
+            modal.classList.add('active');
+        }
+    },
+
+    /**
+     * 画像ビューアーを閉じる
+     */
+    closeImageViewer() {
+        const modal = document.getElementById('image-viewer-modal');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+    },
+
+    /**
+     * 画像ビューアーのイベントリスナーを設定
+     */
+    setupImageViewer() {
+        const modal = document.getElementById('image-viewer-modal');
+        const closeBtn = document.getElementById('close-viewer');
+        const viewerImage = document.getElementById('viewer-image');
+
+        // 閉じるボタン
+        if (closeBtn) {
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.closeImageViewer();
+            });
+        }
+
+        // 背景クリックで閉じる
+        if (modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    this.closeImageViewer();
+                }
+            });
+        }
+
+        // ESCキーで閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.closeImageViewer();
+            }
+        });
+
+        // 画像クリックで閉じる（オプション）
+        if (viewerImage) {
+            viewerImage.addEventListener('click', () => {
+                this.closeImageViewer();
+            });
         }
     }
 };

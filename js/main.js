@@ -17,6 +17,9 @@ const App = {
     async init() {
         console.log('アプリケーション初期化開始');
 
+        // 画像ビューアーのイベントリスナーを設定
+        View.setupImageViewer();
+
         // 設定の読み込み
         const config = Auth.loadConfig();
         
@@ -473,11 +476,19 @@ const App = {
         const img = document.createElement('img');
         img.src = src;
         img.alt = `画像 ${index + 1}`;
+        img.style.cursor = 'pointer';
+        
+        // 画像クリックで拡大表示
+        img.addEventListener('click', (e) => {
+            e.stopPropagation();
+            View.openImageViewer(src);
+        });
         
         const removeBtn = document.createElement('button');
         removeBtn.className = 'image-remove-btn';
         removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
-        removeBtn.onclick = () => {
+        removeBtn.onclick = (e) => {
+            e.stopPropagation();
             this.removeImage(index);
         };
         

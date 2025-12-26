@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>今日何をした？</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -55,20 +56,16 @@
     <div class="card">
         <div class="header-row">
             <button id="menu-btn" class="menu-btn">
-                <svg viewBox="0 0 24 24">
-                    <line x1="4" y1="6" x2="20" y2="6" />
-                    <line x1="4" y1="12" x2="20" y2="12" />
-                    <line x1="4" y1="18" x2="20" y2="18" />
-                </svg>
+                <i class="fas fa-bars"></i>
             </button>
             <h2 id="calendar-title">2025年12月</h2>
         </div>
         
         <div class="calendar-container">
             <div class="calendar-header">
-                <button id="prev-month" class="calendar-nav-btn">← 前月</button>
-                <button id="today-btn" class="calendar-nav-btn">今月</button>
-                <button id="next-month" class="calendar-nav-btn">次月 →</button>
+                <button id="prev-month" class="calendar-nav-btn"><i class="fas fa-chevron-left"></i> 前月</button>
+                <button id="today-btn" class="calendar-nav-btn"><i class="fas fa-calendar-day"></i> 今月</button>
+                <button id="next-month" class="calendar-nav-btn">次月 <i class="fas fa-chevron-right"></i></button>
             </div>
             
             <div id="calendar-grid" class="calendar-grid">
@@ -172,8 +169,8 @@
 <!-- メニューオーバーレイ -->
 <div id="menu-overlay" class="menu-overlay">
     <div class="menu-panel">
-        <button id="menu-today" class="menu-item">📝 今日</button>
-        <button id="menu-calendar" class="menu-item">📅 今まで（カレンダー）</button>
+        <button id="menu-today" class="menu-item"><i class="fas fa-pen"></i> 今日</button>
+        <button id="menu-calendar" class="menu-item"><i class="fas fa-calendar-alt"></i> 今まで（カレンダー）</button>
     </div>
 </div>
 

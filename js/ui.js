@@ -169,7 +169,7 @@ const View = {
             
             const removeBtn = document.createElement('button');
             removeBtn.className = 'image-remove-btn';
-            removeBtn.innerHTML = '×';
+            removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
             removeBtn.onclick = () => {
                 if (window.App) {
                     window.App.removeImage(index);
@@ -215,7 +215,7 @@ const View = {
                 
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'image-remove-btn';
-                removeBtn.innerHTML = '×';
+                removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 removeBtn.onclick = () => {
                     if (window.App) {
                         window.App.removeImage(index);

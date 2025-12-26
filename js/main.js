@@ -476,7 +476,7 @@ const App = {
         
         const removeBtn = document.createElement('button');
         removeBtn.className = 'image-remove-btn';
-        removeBtn.innerHTML = '×';
+        removeBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
         removeBtn.onclick = () => {
             this.removeImage(index);
         };

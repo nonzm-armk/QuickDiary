@@ -77,6 +77,11 @@ body {
     stroke-linecap: round;
 }
 
+.menu-btn i {
+    font-size: 20px;
+    color: var(--text-color);
+}
+
 h2 {
     color: var(--text-color);
     font-size: 18px;
@@ -104,9 +109,9 @@ h2 {
 /* 画像プレビューコンテナ */
 .image-preview-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 10px;
-    max-height: 200px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    max-height: 400px;
     overflow-y: auto;
 }
 
@@ -128,23 +133,30 @@ h2 {
     position: absolute;
     top: 5px;
     right: 5px;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.95);
     border: none;
     cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    color: var(--text-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.image-remove-btn i {
+    font-size: 14px;
+    color: #ff6b6b;
 }
 
 .image-remove-btn:hover {
     background-color: #ff6b6b;
+    transform: scale(1.1);
+}
+
+.image-remove-btn:hover i {
     color: white;
 }
 
@@ -434,10 +446,17 @@ h2 {
     color: var(--text-color);
     font-weight: bold;
     transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .menu-item:hover {
     background-color: #ffdcc7;
+}
+
+.menu-item i {
+    font-size: 18px;
 }
 
 /* ローディングオーバーレイ */
@@ -581,9 +600,9 @@ h2 {
     }
 
     .image-preview-container {
-        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-        gap: 8px;
-        max-height: 150px;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        max-height: 350px;
     }
 
     .camera-btn {

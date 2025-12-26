@@ -113,6 +113,14 @@ const App = {
             });
         }
 
+        // 削除ボタン
+        const deleteBtn = document.getElementById('delete-btn');
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async () => {
+                await this.handleDelete();
+            });
+        }
+
         // 気分ボタン
         const moodButtons = document.querySelectorAll('.mood-btn');
         moodButtons.forEach((btn, index) => {
@@ -495,6 +503,54 @@ const App = {
                 btn.classList.remove('active');
             }
         });
+    },
+
+    /**
+     * 削除処理
+     */
+    async handleDelete() {
+        // 削除確認
+        const confirmed = confirm('この記事を削除しますか？\nこの操作は取り消せません。');
+        if (!confirmed) {
+            return;
+        }
+
+        const dateString = this.formatDate(this.state.currentDate);
+
+        try {
+            // 画像の削除
+            if (this.state.currentImageUrls && this.state.currentImageUrls.length > 0) {
+                const loginInfo = Auth.loadLoginInfo();
+                if (loginInfo) {
+                    for (const url of this.state.currentImageUrls) {
+                        try {
+                            const imagePath = Utils.extractPathFromUrl(url);
+                            if (imagePath) {
+                                await Store.deleteImage(imagePath);
+                            }
+                        } catch (error) {
+                            console.error('画像の削除エラー:', error);
+                            // 画像削除エラーは無視して続行
+                        }
+                    }
+                }
+            }
+
+            // Firestoreから記事を削除
+            await Store.deleteEntry(dateString);
+            
+            alert('削除しました！');
+            
+            // 状態をリセット
+            this.state.selectedImages = [];
+            this.state.currentImageUrls = [];
+            
+            // カレンダー画面へ戻る
+            await this.showCalendar();
+        } catch (error) {
+            console.error('削除エラー:', error);
+            alert('削除に失敗しました: ' + error.message);
+        }
     },
 
     /**

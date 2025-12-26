@@ -90,6 +90,9 @@ const View = {
         if (data.images && data.images.length > 0) {
             this.displayImages(data.images);
         }
+
+        // 削除ボタンを表示（編集モード）
+        this.showDeleteButton();
     },
 
     /**
@@ -120,6 +123,29 @@ const View = {
 
         // 画像のクリア
         this.clearImages();
+
+        // 削除ボタンを非表示（新規モード）
+        this.hideDeleteButton();
+    },
+
+    /**
+     * 削除ボタンを表示
+     */
+    showDeleteButton() {
+        const deleteBtn = document.getElementById('delete-btn');
+        if (deleteBtn) {
+            deleteBtn.style.display = 'block';
+        }
+    },
+
+    /**
+     * 削除ボタンを非表示
+     */
+    hideDeleteButton() {
+        const deleteBtn = document.getElementById('delete-btn');
+        if (deleteBtn) {
+            deleteBtn.style.display = 'none';
+        }
     },
 
     /**

@@ -155,8 +155,8 @@ h2 {
 }
 
 .camera-btn {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     background-color: var(--accent-green);
     border-radius: 20px;
     display: flex;
@@ -172,8 +172,8 @@ h2 {
 }
 
 .camera-svg {
-    width: 60px;
-    height: 60px;
+    width: 72px;
+    height: 72px;
     stroke-width: 2.5;
     fill: var(--primary-orange);
     opacity: 0.6;
@@ -505,13 +505,13 @@ h2 {
     }
 
     .camera-btn {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
     }
 
     .camera-svg {
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
     }
 
     .ok-btn, .delete-btn {
@@ -543,9 +543,18 @@ h2 {
 }
 
 @media (max-width: 480px) {
+    body {
+        padding: 0;
+    }
+
     .card {
-        padding: 10px 15px;
+        padding: 15px 10px;
         gap: 15px;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        max-width: 100%;
+        width: 100%;
     }
 
     .header-row {
@@ -578,8 +587,13 @@ h2 {
     }
 
     .camera-btn {
-        width: 70px;
-        height: 70px;
+        width: 90px;
+        height: 90px;
+    }
+
+    .camera-svg {
+        width: 54px;
+        height: 54px;
     }
 
     .mood-btn svg {
@@ -592,16 +606,22 @@ h2 {
     }
 
     .calendar-nav-btn {
-        padding: 5px 8px;
-        font-size: 11px;
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .calendar-grid {
+        gap: 8px;
     }
 
     .calendar-day {
-        font-size: 11px;
+        font-size: 16px;
+        padding: 8px 4px;
     }
 
     .calendar-day-header {
-        font-size: 10px;
+        font-size: 13px;
+        padding: 8px 4px;
     }
 
     .menu-panel {

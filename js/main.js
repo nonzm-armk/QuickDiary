@@ -6,7 +6,9 @@ const App = {
         currentDate: new Date(),
         currentYear: new Date().getFullYear(),
         currentMonth: new Date().getMonth(),
-        user: null
+        user: null,
+        selectedImages: [], // 新規選択された画像ファイル
+        currentImageUrls: [] // 既存の画像URL（編集時）
     },
 
     /**
@@ -150,6 +152,19 @@ const App = {
                 await this.showCalendar();
             });
         }
+
+        // カメラボタン（画像選択）
+        const cameraBtn = document.querySelector('.camera-btn');
+        const imageInput = document.getElementById('image-input');
+        if (cameraBtn && imageInput) {
+            cameraBtn.addEventListener('click', () => {
+                imageInput.click();
+            });
+
+            imageInput.addEventListener('change', (e) => {
+                this.handleImageSelect(e.target.files);
+            });
+        }
     },
 
     /**
@@ -208,11 +223,16 @@ const App = {
         // 日付表示を更新
         View.updateDateDisplay(today);
         
+        // 画像状態をリセット
+        this.state.selectedImages = [];
+        this.state.currentImageUrls = [];
+        
         // 既存の記事を読み込み
         try {
             const entry = await Store.loadEntry(dateString);
             if (entry) {
                 View.setEditorData(entry);
+                this.state.currentImageUrls = entry.images || [];
             } else {
                 View.clearEditor();
             }
@@ -259,11 +279,16 @@ const App = {
         // 日付表示を更新
         View.updateDateDisplay(selectedDate);
         
+        // 画像状態をリセット
+        this.state.selectedImages = [];
+        this.state.currentImageUrls = [];
+        
         // その日の記事を読み込み
         try {
             const entry = await Store.loadEntry(dateString);
             if (entry) {
                 View.setEditorData(entry);
+                this.state.currentImageUrls = entry.images || [];
             } else {
                 View.clearEditor();
             }
@@ -283,8 +308,46 @@ const App = {
         const data = View.getEditorData();
 
         try {
+            // 画像の処理
+            const imageUrls = [];
+            
+            // 新規画像のアップロード
+            if (this.state.selectedImages.length > 0) {
+                const loginInfo = Auth.loadLoginInfo();
+                if (!loginInfo) {
+                    throw new Error('ログインしていません');
+                }
+
+                for (let i = 0; i < this.state.selectedImages.length; i++) {
+                    const file = this.state.selectedImages[i];
+                    
+                    // 画像をリサイズ
+                    const resizedBlob = await Utils.resizeImage(file, 1024);
+                    
+                    // Storageにアップロード
+                    const imagePath = Utils.generateImagePath(
+                        loginInfo.uid,
+                        dateString,
+                        imageUrls.length + i
+                    );
+                    
+                    const url = await Store.uploadImage(resizedBlob, imagePath);
+                    imageUrls.push(url);
+                }
+            }
+            
+            // 既存の画像URLを保持
+            const allImageUrls = [...this.state.currentImageUrls, ...imageUrls];
+            
+            // データに画像URLを追加
+            data.images = allImageUrls;
+            
             await Store.saveEntry(dateString, data);
             alert('保存しました！');
+            
+            // 状態をリセット
+            this.state.selectedImages = [];
+            this.state.currentImageUrls = [];
             
             // カレンダー画面へ戻る
             await this.showCalendar();
@@ -292,6 +355,116 @@ const App = {
             console.error('保存エラー:', error);
             alert('保存に失敗しました: ' + error.message);
         }
+    },
+
+    /**
+     * 画像選択時の処理
+     * @param {FileList} files - 選択されたファイル
+     */
+    handleImageSelect(files) {
+        const filesArray = Array.from(files);
+        
+        // 画像ファイルのみフィルタ
+        const imageFiles = filesArray.filter(file => file.type.startsWith('image/'));
+        
+        // 最大5枚まで
+        const totalImages = this.state.selectedImages.length + this.state.currentImageUrls.length;
+        const availableSlots = 5 - totalImages;
+        
+        if (availableSlots <= 0) {
+            alert('画像は最大5枚までです。');
+            return;
+        }
+        
+        const filesToAdd = imageFiles.slice(0, availableSlots);
+        this.state.selectedImages.push(...filesToAdd);
+        
+        // プレビュー表示を更新
+        this.updateImagePreviews();
+        
+        if (imageFiles.length > availableSlots) {
+            alert(`画像は最大5枚までです。${availableSlots}枚のみ追加されました。`);
+        }
+    },
+
+    /**
+     * 画像プレビューを更新
+     */
+    updateImagePreviews() {
+        const allImages = [
+            ...this.state.currentImageUrls,
+            ...this.state.selectedImages
+        ];
+        
+        if (allImages.length === 0) {
+            View.clearImages();
+            return;
+        }
+        
+        // URLと File が混在する場合の処理
+        const previewContainer = document.getElementById('image-preview');
+        if (!previewContainer) return;
+        
+        previewContainer.innerHTML = '';
+        
+        allImages.forEach((item, index) => {
+            if (typeof item === 'string') {
+                // URL（既存画像）
+                this.addImagePreview(item, index, previewContainer);
+            } else {
+                // File（新規画像）
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.addImagePreview(e.target.result, index, previewContainer);
+                };
+                reader.readAsDataURL(item);
+            }
+        });
+    },
+
+    /**
+     * 画像プレビューを追加
+     * @param {string} src - 画像のソース
+     * @param {number} index - インデックス
+     * @param {HTMLElement} container - コンテナ要素
+     */
+    addImagePreview(src, index, container) {
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'image-preview-item';
+        
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `画像 ${index + 1}`;
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'image-remove-btn';
+        removeBtn.innerHTML = '×';
+        removeBtn.onclick = () => {
+            this.removeImage(index);
+        };
+        
+        imgWrapper.appendChild(img);
+        imgWrapper.appendChild(removeBtn);
+        container.appendChild(imgWrapper);
+    },
+
+    /**
+     * 画像を削除
+     * @param {number} index - 削除する画像のインデックス
+     */
+    removeImage(index) {
+        const currentUrlsCount = this.state.currentImageUrls.length;
+        
+        if (index < currentUrlsCount) {
+            // 既存画像の削除
+            this.state.currentImageUrls.splice(index, 1);
+        } else {
+            // 新規画像の削除
+            const newImageIndex = index - currentUrlsCount;
+            this.state.selectedImages.splice(newImageIndex, 1);
+        }
+        
+        this.updateImagePreviews();
     },
 
     /**

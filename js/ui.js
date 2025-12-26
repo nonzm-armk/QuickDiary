@@ -86,7 +86,10 @@ const View = {
             }
         });
 
-        // TODO: 画像の表示処理
+        // 画像の表示
+        if (data.images && data.images.length > 0) {
+            this.displayImages(data.images);
+        }
     },
 
     /**
@@ -115,7 +118,91 @@ const View = {
             }
         });
 
-        // TODO: 画像のクリア処理
+        // 画像のクリア
+        this.clearImages();
+    },
+
+    /**
+     * 画像プレビューを表示
+     * @param {Array<string>} imageUrls - 画像URLの配列
+     */
+    displayImages(imageUrls) {
+        const previewContainer = document.getElementById('image-preview');
+        if (!previewContainer) return;
+
+        previewContainer.innerHTML = '';
+        
+        imageUrls.forEach((url, index) => {
+            const imgWrapper = document.createElement('div');
+            imgWrapper.className = 'image-preview-item';
+            imgWrapper.dataset.url = url;
+            
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = `画像 ${index + 1}`;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'image-remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => {
+                if (window.App) {
+                    window.App.removeImage(index);
+                }
+            };
+            
+            imgWrapper.appendChild(img);
+            imgWrapper.appendChild(removeBtn);
+            previewContainer.appendChild(imgWrapper);
+        });
+    },
+
+    /**
+     * 画像プレビューをクリア
+     */
+    clearImages() {
+        const previewContainer = document.getElementById('image-preview');
+        if (previewContainer) {
+            previewContainer.innerHTML = '';
+        }
+    },
+
+    /**
+     * ローカルファイルから画像プレビューを表示
+     * @param {Array<File>} files - 画像ファイルの配列
+     */
+    displayLocalImages(files) {
+        const previewContainer = document.getElementById('image-preview');
+        if (!previewContainer) return;
+
+        previewContainer.innerHTML = '';
+        
+        files.forEach((file, index) => {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                const imgWrapper = document.createElement('div');
+                imgWrapper.className = 'image-preview-item';
+                
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = `画像 ${index + 1}`;
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'image-remove-btn';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => {
+                    if (window.App) {
+                        window.App.removeImage(index);
+                    }
+                };
+                
+                imgWrapper.appendChild(img);
+                imgWrapper.appendChild(removeBtn);
+                previewContainer.appendChild(imgWrapper);
+            };
+            
+            reader.readAsDataURL(file);
+        });
     },
 
     /**
@@ -145,13 +232,11 @@ const View = {
             }
         });
 
-        // TODO: 画像の取得処理
-
+        // 画像は別途管理（App.state.selectedImagesまたはApp.state.currentImageUrls）
         return {
             text,
             mood,
-            color,
-            images: [] // TODO
+            color
         };
     },
 
